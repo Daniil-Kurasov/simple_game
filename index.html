@@ -1,235 +1,314 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <link href="style.css" rel="stylesheet" />
+    <title>Гачи Гейм</title>
+  </head>
 
-<head>
-   <meta charset="utf-8" />
-   <meta name="viewport"
-      content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-   <title>Game</title>
-   <style>
-      * {
-         padding: 0;
-         margin: 0;
-      }
+  <body>
+    <div class="dropdown">
+      <button class="styled-button">Инструкция</button>
+      <div class="dropdown-content">
+        <p class="dp_text">1. Сбивайте блоки до тех пор, пока не выиграете</p>
+      </div>
+    </div>
 
-      canvas {
-         background: #eee;
-         display: block;
-         margin: 0 auto;
-      }
-   </style>
-</head>
+    <div id="gameOver">
+      <h1>ИГРА ПРОИГРАНА!</h1>
+      <div id="imgGO" alt="Game Win"></div>
+      <br />
+      <button onclick="closeGameOver()">ЗАНОВО</button>
+      <button onclick="reload_f()">ЗАВЕРШИТЬ</button>
+    </div>
 
-<body>
+    <div id="gameWin">
+      <h1>ПОБЕДА, НАЛИВАЙ!</h1>
+      <div id="imgGW" alt="Game Win"></div>
+      <br />
+      <button onclick="closeGameWin()">ЗАНОВО</button>
+      <button onclick="reload_f()">ЗАВЕРШИТЬ</button>
+    </div>
 
-   <canvas id="myCanvas"></canvas>
+    <select
+      class="styled-button"
+      id="difficulty"
+      onchange="changeDifficulty2()"
+    >
+      <option value="easy">Легкая</option>
+      <option value="medium">Средняя</option>
+      <option value="hard">Сложная</option>
+    </select>
 
-   <script>
-      // var canvas = document.getElementById("myCanvas");;
+    <button class="styled-button" onclick="changeDifficulty()">Начать</button>
+    <button class="styled-button" onclick="reload_f()">Завершить</button>
+    <canvas id="myCanvas"></canvas>
 
-      // canvas.width = window.innerWidth;
-      // canvas.height = window.innerHeight;
-
-
-      // var ctx = canvas.getContext("2d");
-      // var ballRadius = 10;
-      // var x = canvas.width / 2;
-      // var y = canvas.height - 30;
-      // var dx = 2;
-      // var dy = -2;
-      // var paddleHeight = 10;
-      // var paddleWidth = 75;
-      // var paddleX = (canvas.width - paddleWidth) / 2;
-      // var rightPressed = false;
-      // var leftPressed = false;
-      // var brickRowCount = 5;
-      // var brickColumnCount = 3;
-      // var brickWidth = 75;
-      // var brickHeight = 20;
-      // var brickPadding = 10;
-      // var brickOffsetTop = 30;
-      // var brickOffsetLeft = 30;
-      // var score = 0;
-      // var lives = 3;
+    <script>
+      var stop = false; // Переменная состояния
 
       var canvas = document.getElementById("myCanvas");
+      function changeDifficulty() {
+        stop = true;
+        document.getElementById("gameOver").style.display = "none";
+        document.getElementById("gameWin").style.display = "none";
+        var selectElement = document.getElementById("difficulty");
+        var difficulty = selectElement.value;
+        switch (difficulty) {
+          case "easy":
+            startGame(3, 1, 1, 0.9);
+            break;
+          case "medium":
+            startGame(2, 9, 3, 0.095);
+            break;
+          case "hard":
+            startGame(1, 9, 5, 0.095);
+            break;
+        }
+      }
 
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      function startGame(lives, brickRowCount, brickColumnCount, brickWidth2) {
+        canvas.width = window.innerWidth * 0.8;
+        canvas.height = window.innerHeight * 0.8;
 
-      var ctx = canvas.getContext("2d");
-      var ballRadius = 0.01 * canvas.width; // 1% от ширины холста
-      var x = canvas.width / 2;
-      var y = canvas.height - 0.03 * canvas.height; // 3% от высоты холста
-      var dx = 0.002 * canvas.width; // 0.2% от ширины холста
-      var dy = -0.002 * canvas.height; // 0.2% от высоты холста
-      var paddleHeight = 0.01 * canvas.height; // 1% от высоты холста
-      var paddleWidth = 0.075 * canvas.width; // 7.5% от ширины холста
-      var paddleX = (canvas.width - paddleWidth) / 2;
-      var rightPressed = false;
-      var leftPressed = false;
-      var brickRowCount = 11;
-      var brickColumnCount = 6;
-      var brickWidth = 0.075 * canvas.width; // 7.5% от ширины холста
-      var brickHeight = 0.02 * canvas.height; // 2% от высоты холста
-      var brickPadding = 0.01 * canvas.width; // 1% от ширины холста
-      var brickOffsetTop = 0.03 * canvas.height; // 3% от высоты холста
-      var brickOffsetLeft = 0.03 * canvas.width; // 3% от ширины холста
-      var score = 0;
-      var lives = 3;
+        var ctx = canvas.getContext("2d");
+        var ballRadius = 0.01 * canvas.width * 0.8; // 1% от ширины холста
+        var x = canvas.width / 2;
+        var y = canvas.height - 0.03 * canvas.height; // 3% от высоты холста
+        var dx = 0.002 * canvas.width; // 0.2% от ширины холста
+        var dy = -0.002 * canvas.height; // 0.2% от высоты холста
+        var paddleHeight = 0.05 * canvas.height; // 1% от высоты холста
+        var paddleWidth = 0.3 * canvas.width; // 7.5% от ширины холста
+        var paddleX = (canvas.width - paddleWidth) / 2;
+        var rightPressed = false;
+        var leftPressed = false;
+        var brickWidth = brickWidth2 * canvas.width; // 7.5% от ширины холста
+        var brickHeight = 0.02 * canvas.height; // 2% от высоты холста
+        var brickPadding = 0.01 * canvas.width; // 1% от ширины холста
+        var brickOffsetTop = 0.03 * canvas.height; // 3% от высоты холста
+        var brickOffsetLeft = 0.03 * canvas.width; // 3% от ширины холста
+        var score = 0;
+        //   var lives = 1;
 
-      var bricks = [];
-      for (var c = 0; c < brickColumnCount; c++) {
-         bricks[c] = [];
-         for (var r = 0; r < brickRowCount; r++) {
+        var bricks = [];
+        for (var c = 0; c < brickColumnCount; c++) {
+          bricks[c] = [];
+          for (var r = 0; r < brickRowCount; r++) {
             bricks[c][r] = { x: 0, y: 0, status: 1 };
-         }
-      }
+          }
+        }
 
-      document.addEventListener("keydown", keyDownHandler, false);
-      document.addEventListener("keyup", keyUpHandler, false);
-      document.addEventListener("mousemove", mouseMoveHandler, false);
-      document.addEventListener("touchmove", touchMoveHandler, false);
-      function keyDownHandler(e) {
-         if (e.code == "ArrowRight") {
+        document.addEventListener("keydown", keyDownHandler, false);
+        document.addEventListener("keyup", keyUpHandler, false);
+        document.addEventListener("mousemove", mouseMoveHandler, false);
+        document.addEventListener("touchmove", touchMoveHandler, false);
+        function keyDownHandler(e) {
+          if (e.code == "ArrowRight") {
             rightPressed = true;
-         }
-         else if (e.code == 'ArrowLeft') {
+          } else if (e.code == "ArrowLeft") {
             leftPressed = true;
-         }
-      }
-      function keyUpHandler(e) {
-         if (e.code == 'ArrowRight') {
+          }
+        }
+        function keyUpHandler(e) {
+          if (e.code == "ArrowRight") {
             rightPressed = false;
-         }
-         else if (e.code == 'ArrowLeft') {
+          } else if (e.code == "ArrowLeft") {
             leftPressed = false;
-         }
-      }
-      function mouseMoveHandler(e) {
-         var relativeX = e.clientX - canvas.offsetLeft;
-         if (relativeX > 0 && relativeX < canvas.width) {
+          }
+        }
+        function mouseMoveHandler(e) {
+          var relativeX = e.clientX - canvas.offsetLeft;
+          if (relativeX > 0 && relativeX < canvas.width) {
             paddleX = relativeX - paddleWidth / 2;
-         }
-      }
-      function touchMoveHandler(e) {
-         var touch = e.touches[0];
-         var relativeX = touch.clientX - canvas.offsetLeft;
-         if (relativeX > 0 && relativeX < canvas.width) {
+          }
+        }
+        function touchMoveHandler(e) {
+          var touch = e.touches[0];
+          var relativeX = touch.clientX - canvas.offsetLeft;
+          if (relativeX > 0 && relativeX < canvas.width) {
             paddleX = relativeX - paddleWidth / 2;
-         }
-      }
-      function collisionDetection() {
-         for (var c = 0; c < brickColumnCount; c++) {
+          }
+        }
+        function collisionDetection() {
+          for (var c = 0; c < brickColumnCount; c++) {
             for (var r = 0; r < brickRowCount; r++) {
-               var b = bricks[c][r];
-               if (b.status == 1) {
-                  if (x > b.x && x < b.x + brickWidth && y > b.y && y < b.y + brickHeight) {
-                     dy = -dy;
-                     b.status = 0;
-                     score++;
-                     if (score == brickRowCount * brickColumnCount) {
-                        alert("YOU WIN, CONGRATS!");
-                        document.location.reload();
-                     }
+              var b = bricks[c][r];
+              if (b.status == 1) {
+                if (
+                  x > b.x &&
+                  x < b.x + brickWidth &&
+                  y > b.y &&
+                  y < b.y + brickHeight
+                ) {
+                  dy = -dy;
+                  b.status = 0;
+                  score++;
+                  if (score == brickRowCount * brickColumnCount) {
+                    gameWin();
                   }
-               }
+                }
+              }
             }
-         }
-      }
+          }
+        }
+        let angle = 0; // начальный угол поворота
+        function drawBall() {
+          ctx.save(); // сохраняем текущее состояние контекста
+          ctx.translate(x + 10, y + 30); // перемещаем начало координат в центр бутылки
+          ctx.rotate(angle); // поворачиваем контекст
 
-      function drawBall() {
-         ctx.beginPath();
-         ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
-         ctx.fillStyle = "#0095DD";
-         ctx.fill();
-         ctx.closePath();
-      }
-      function drawPaddle() {
-         ctx.beginPath();
-         ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
-         ctx.fillStyle = "#0095DD";
-         ctx.fill();
-         ctx.closePath();
-      }
-      function drawBricks() {
-         for (var c = 0; c < brickColumnCount; c++) {
+          // Рисуем бутылку так же, как и раньше, но с учетом нового начала координат
+          ctx.beginPath();
+          ctx.rect(-10, -30, 40, 60);
+          ctx.fillStyle = "#964B00";
+          ctx.fill();
+          ctx.closePath();
+
+          ctx.beginPath();
+          ctx.rect(2, -50, 15, 20);
+          ctx.fillStyle = "#964B00";
+          ctx.fill();
+          ctx.closePath();
+
+          ctx.beginPath();
+          ctx.arc(9, -50, 10, Math.PI, 2 * Math.PI);
+          ctx.fillStyle = "#DAA520";
+          ctx.fill();
+          ctx.closePath();
+
+          // Добавляем текст "ПИВО" внутрь бутылки
+          ctx.font = "14px Arial";
+          ctx.fillStyle = "white";
+          ctx.fillText("ПИВО", -10, 0); // текст будет центрирован по вертикали в бутылке
+
+          ctx.restore(); // восстанавливаем состояние контекста
+
+          angle += 0.01; // увеличиваем угол поворота
+        }
+
+        setInterval(drawBall, 10);
+        function drawPaddle() {
+          ctx.beginPath();
+          ctx.rect(
+            paddleX,
+            canvas.height - paddleHeight,
+            paddleWidth,
+            paddleHeight
+          );
+          ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+          ctx.fill();
+          ctx.closePath();
+        }
+        var hue = 0;
+        function drawBricks() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height); // Очистить холст перед каждой перерисовкой
+          for (var c = 0; c < brickColumnCount; c++) {
             for (var r = 0; r < brickRowCount; r++) {
-               if (bricks[c][r].status == 1) {
-                  var brickX = (r * (brickWidth + brickPadding)) + brickOffsetLeft;
-                  var brickY = (c * (brickHeight + brickPadding)) + brickOffsetTop;
-                  bricks[c][r].x = brickX;
-                  bricks[c][r].y = brickY;
-                  ctx.beginPath();
-                  ctx.rect(brickX, brickY, brickWidth, brickHeight);
-                  ctx.fillStyle = "#0095DD";
-                  ctx.fill();
-                  ctx.closePath();
-               }
+              if (bricks[c][r].status == 1) {
+                var brickX = r * (brickWidth + brickPadding) + brickOffsetLeft;
+                var brickY = c * (brickHeight + brickPadding) + brickOffsetTop;
+                bricks[c][r].x = brickX;
+                bricks[c][r].y = brickY;
+                ctx.beginPath();
+                ctx.rect(brickX, brickY, brickWidth, brickHeight);
+                ctx.fillStyle = "hsl(" + hue + ", 100%, 50%)"; // Используем HSL для анимации цвета
+                ctx.fill();
+                ctx.strokeStyle = "black"; // Добавляем обводку
+                ctx.lineWidth = 3; // Задаем толщину обводки
+                ctx.stroke(); // Применяем обводку
+                ctx.shadowColor = "rgba(0, 0, 0, 0.5)"; // Цвет тени
+                ctx.shadowBlur = 10; // Размытие тени
+                ctx.shadowOffsetX = 5; // Смещение тени по X
+                ctx.shadowOffsetY = 5; // Смещение тени по Y
+                ctx.closePath();
+              }
             }
-         }
-      }
-      function drawScore() {
-         ctx.font = "16px Arial";
-         ctx.fillStyle = "#0095DD";
-         ctx.fillText("Score: " + score, 8, 20);
-      }
-      function drawLives() {
-         ctx.font = "16px Arial";
-         ctx.fillStyle = "#0095DD";
-         ctx.fillText("Lives: " + lives, canvas.width - 65, 20);
-      }
+          }
+          hue = (hue + 1) % 360; // Увеличиваем оттенок на 1 (или сбрасываем до 0, если достигнут максимум)
+        }
 
-      function draw() {
-         ctx.clearRect(0, 0, canvas.width, canvas.height);
-         drawBricks();
-         drawBall();
-         drawPaddle();
-         drawScore();
-         drawLives();
-         collisionDetection();
+        setInterval(drawBricks, 3000); // Вызвать drawBricks каждые 3 секунды
+        function drawScore() {
+          ctx.font = "18px Arial";
+          ctx.fillStyle = "#f200ff";
+          ctx.fillText("Счет: " + score, 8, 20);
+        }
+        function drawLives() {
+          ctx.font = "18px Arial";
+          ctx.fillStyle = "#f200ff";
+          ctx.fillText("Жизни: " + lives, canvas.width - 105, 20);
+        }
 
-         if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+        function draw() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          drawBricks();
+          drawBall();
+          drawPaddle();
+          drawScore();
+          drawLives();
+          collisionDetection();
+
+          if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
             dx = -dx;
-         }
-         if (y + dy < ballRadius) {
+          }
+          if (y + dy < ballRadius) {
             dy = -dy;
-         }
-         else if (y + dy > canvas.height - ballRadius) {
+          } else if (y + dy > canvas.height - ballRadius) {
             if (x > paddleX && x < paddleX + paddleWidth) {
-               dy = -dy;
+              dy = -dy;
+            } else {
+              lives--;
+              if (!lives) {
+                gameOver();
+              } else {
+                x = canvas.width / 2;
+                y = canvas.height - 30;
+                dx = 2;
+                dy = -2;
+                paddleX = (canvas.width - paddleWidth) / 2;
+              }
             }
-            else {
-               lives--;
-               if (!lives) {
-                  alert("GAME OVER");
-                  document.location.reload();
-               }
-               else {
-                  x = canvas.width / 2;
-                  y = canvas.height - 30;
-                  dx = 2;
-                  dy = -2;
-                  paddleX = (canvas.width - paddleWidth) / 2;
-               }
-            }
-         }
+          }
 
-         if (rightPressed && paddleX < canvas.width - paddleWidth) {
+          if (rightPressed && paddleX < canvas.width - paddleWidth) {
             paddleX += 7;
-         }
-         else if (leftPressed && paddleX > 0) {
+          } else if (leftPressed && paddleX > 0) {
             paddleX -= 7;
-         }
+          }
 
-         x += dx;
-         y += dy;
-         requestAnimationFrame(draw);
+          x += dx;
+          y += dy;
+          requestAnimationFrame(draw);
+        }
+        draw();
+      }
+      function gameOver() {
+        document.getElementById("gameOver").style.display = "block";
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
       }
 
-      draw();
-   </script>
+      function closeGameOver() {
+        document.getElementById("gameOver").style.display = "none";
+        changeDifficulty();
+      }
 
-</body>
+      function gameWin() {
+        document.getElementById("gameWin").style.display = "block";
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
 
+      function closeGameWin() {
+        document.getElementById("gameWin").style.display = "none";
+        changeDifficulty();
+      }
+
+      function reload_f() {
+        document.location.reload();
+      }
+    </script>
+  </body>
 </html>

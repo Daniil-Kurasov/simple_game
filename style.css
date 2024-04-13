@@ -1,0 +1,182 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+
+canvas {
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  display: block;
+  margin: 0 auto;
+}
+
+#myCanvas {
+  border: 5px solid #f200ff; /* Задаем рамку */
+  border-radius: 3px;
+  width: 80%;
+  height: 80%;
+}
+body::after {
+  content: "";
+  background: url("img/background.jpg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: -1;
+  filter: blur(14px);
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #410f92;
+  min-width: 300px;
+  min-height: 120px;
+  box-shadow: 0px 8px 16px 0px #ffffff;
+  padding: 12px 16px;
+  z-index: 1;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dp_text {
+  color: #ffffff;
+  font-size: 20px;
+}
+
+#gameOver {
+  display: none;
+  position: fixed;
+  width: 80%;
+  height: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #f8d7da;
+  color: #721c24;
+  text-align: center;
+  padding: 20px;
+  border: 2px solid #f5c6cb;
+  border-radius: 10px;
+}
+
+#imgGO {
+  background: url("img/gameOver.gif");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  width: 50%;
+  height: auto;
+}
+
+#gameOver h1 {
+  margin: 0;
+}
+
+#gameOver button {
+  background-color: #001844;
+  color: #ff0080;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 10px 2px;
+  cursor: pointer;
+}
+
+#gameWin {
+  display: none;
+  position: fixed;
+  width: 80%;
+  height: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #f8d7da;
+  color: #721c24;
+  text-align: center;
+  padding: 20px;
+  border: 2px solid #f5c6cb;
+  border-radius: 10px;
+}
+
+#imgGW {
+  background: url("img/mellstroy.gif");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  width: 50%;
+  height: auto;
+}
+
+#gameWin h1 {
+  margin: 0;
+}
+
+#gameWin button {
+  background-color: #001844;
+  color: #ff0080;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 10px 2px;
+  cursor: pointer;
+}
+
+/* Для экранов шириной 600px и больше */
+@media (min-width: 600px) {
+  #gameOver {
+    width: 330px;
+    height: 400px;
+  }
+
+  #imgGO {
+    width: 310px;
+    height: 200px;
+  }
+  #gameWin {
+    width: 330px;
+    height: 400px;
+  }
+
+  #imgGW {
+    width: 310px;
+    height: 200px;
+  }
+}
+
+.styled-button {
+  background-color: #4caf50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  transition-duration: 0.4s; /* Добавляем анимацию */
+}
+
+.styled-button:hover {
+  background-color: #45a049; /* Darker green */
+  color: white;
+}
